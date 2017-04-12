@@ -3,7 +3,7 @@
 Very simple Turing-like programming language written in C.
 
 ## Basic concept of the system:
-
+```
 	--+---+---+---+---+---+---+---+---+--- tape with some data (input)
 	  | 1 | 1 | b | b | ? | 0 | 0 | 1 |
 	--+---+---+---+---+---+---+---+---+---
@@ -14,7 +14,7 @@ Very simple Turing-like programming language written in C.
 		/\                 state(q)
 		|
 		+------------------> rules  
-
+```
 	There is an infinite long tape(we use a finite log tape) with squares on it, each square contains a symbol. A head moves along the tape and it can read and/or write exactly one square on each step. It can move left or right, but only one square per step.
 	This system has a state, which can be changed. There is a set of rules, that describes the behaviour of the system, based on the current symbol and the state.
 	Every program (ruleset) MUST contain a rule for halt.
