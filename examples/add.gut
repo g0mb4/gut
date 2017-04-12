@@ -1,0 +1,49 @@
+# add.gut - 3 + 2 = ?
+#
+# Very simple Turing-like programming language.
+# Basic concept of the system:
+#
+#  --+---+---+---+---+---+---+---+---+--- tape with some data (input)
+#    | 1 | 1 | b | b | ? | 0 | 0 | 1 |
+#  --+---+---+---+---+---+---+---+---+---
+#              /\                 
+#             |  |                ~~~~~ 
+#      l <-   |__|   -> r         | 0 |
+#             head                ~~~~~
+#			   /\                 state
+#              |
+#              +------------------> rules   
+#
+#  In this example, the machine uses unary numeral system to add 2 numbers.
+#  
+# gmb, 2014
+
+# tape (input)
+<t
+111+11+bbbbbbbbbbbbb
+t>
+
+# rules (program)
+# syntax: symbol(1) old_state(2) new_state(2) write(1) move(1) halt(1)
+#  - symbol: a character that is on the tape, any character except '#'
+#  - old state: the state of the system : __ - whatever
+#										  ex - equals x
+#										  nx - NOT equals x
+#  - new state: state after step : __ - no changes
+#                                  pp : plus 1 (++)
+#								   mm : minus 1 (--)
+#								   px : plus x
+#								   mx : minus x
+#  - write: overwrite the current symbol : _ - no changes
+#										   any other character 
+#  - move: moves the head: r - right
+#						   l - left
+#						   _ - no moves 
+#  - halt: end of the program? : 0 - no
+#								 1 - yes
+<r
+1 __ pp _ r 0
++ __ __ _ r 0
+b e0 __ _ _ 1
+b n0 mm 1 r 0
+r>
