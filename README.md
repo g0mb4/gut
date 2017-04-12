@@ -30,19 +30,23 @@ syntax: symbol(1) old_state(<= 16) new_state(<= 16) write(1) move(1) halt(1)
 	* __ - whatever
 	* qx - equals x ?
 	* nx - NOT equals x ?
-* new state: state after step : __ - no changes
-				ex : state = x
-				pp : plus 1 (++)
-				mm : minus 1 (--)
-				px : plus x
-				mx : minus x
-- write: overwrite the current symbol : _ - no changes
-					any other character 
-- move: moves the head: r - right
-			l - left
-			_ - no moves 
-- halt: end of the program? : 0 - no
-			      1 - yes
+* new state: state after step : 
+	* __ - no changes
+	* ex : state = x
+	* pp : plus 1 (++)
+	* mm : minus 1 (--)
+	* px : plus x
+	* mx : minus x
+* write: overwrite the current symbol : 
+	* _ - no changes
+	* any other character 
+* move: moves the head: 
+	* r - right
+	* l - left
+	* _ - no moves 
+* halt: end of the program? : 
+	* 0 - no
+	* 1 - yes
 
 ## example program:
 
@@ -60,23 +64,19 @@ r>
 ```
 
 ## CHANGELOG
-------------------
-2015-01-09: v.1.2
-------------------
-  - "-u" switch added (usermode)
-  - "-s" -> "-d" (debug)
-  - "-S" switch added (Assembly)
-------------------
-2014-08-29: v.1.1
-------------------
- - oldstate: 'e' -> 'q'
- - newstate: 'e' option added
- - state: state used to be a ONE digit number, now it can be a 10 digit number(at compare or modification)
- - values of 'status' and 'head' before and after a step (at displaying)
-
-------------------
-2014-08-22: v.1.0
-------------------
- - first release
+* 2015-01-09: v.1.2
+  * "-u" switch added (usermode)
+  * "-s" -> "-d" (debug)
+  * "-S" switch added (Assembly)
+  
+* 2014-08-29: v.1.1
+ * oldstate: 'e' -> 'q'
+ * newstate: 'e' option added
+ * state: state used to be a ONE digit number, now it can be a 10 digit number(at compare or modification)
+ * values of 'status' and 'head' before and after a step (at displaying)
+ 
+* 2014-08-22: v.1.0
+ * first release
 
  gmb, 2014
+ 
