@@ -65,18 +65,18 @@ r>
 
 ## CHANGELOG
 * 2015-01-09: v.1.2
-  * "-u" switch added (usermode)
-  * "-s" -> "-d" (debug)
-  * "-S" switch added (Assembly)
+	* "-u" switch added (usermode)
+	* "-s" -> "-d" (debug)
+	* "-S" switch added (Assembly)
   
 * 2014-08-29: v.1.1
- * oldstate: 'e' -> 'q'
- * newstate: 'e' option added
- * state: state used to be a ONE digit number, now it can be a 10 digit number(at compare or modification)
- * values of 'status' and 'head' before and after a step (at displaying)
+	* oldstate: 'e' -> 'q'
+ 	* newstate: 'e' option added
+ 	* state: state used to be a ONE digit number, now it can be a 10 digit number(at compare or modification)
+ 	* values of 'status' and 'head' before and after a step (at displaying)
  
 * 2014-08-22: v.1.0
- * first release
+ 	* first release
 
  gmb, 2014
  
