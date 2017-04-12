@@ -19,5 +19,4 @@ extern char **errors;
 
 int process(rule *rules, int rule_ctr, char c, char *t, int *s, int *h);
 
-
 #endif

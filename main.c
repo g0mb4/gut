@@ -6,8 +6,10 @@
 #include <string.h>
 
 #include "gut.h"
+#include "asm.h"
 
 char tape[256];
+char tape_orig[256];
 int head_pos = 0, status = 0;
 int head_pos_tmp, status_tmp;
 rule rules[128];
@@ -15,16 +17,26 @@ int rule_ctr = 0;
 
 int handle_line(char *line);
 
-char *help = "usage: gut -f <file> [-s]\n\n -f <file> - loads <file> and executes it\n -s - stepping mode(user interaction required)\n2014, gmb\n";
+char *help = "usage: gut -f <file> [-d] [-u] [-S]\n\n"
+             " -f <file> - loads <file> and executes it\n"
+             " -d        - debug, stepping mode(user interaction required)\n"
+             " -u        - wait for user before exit\n"
+             " -S        - compile to a GAS assembly file (*.S)\n\n"
+             "2014, gmb\n";
 
 int main(int argc, char **argv)
 {
+    int ret = 0;
     char *fname;
     FILE *fp;
     char line[128];
     int err = 0;
     unsigned int linenum = 0;
     char stepmode = 0;
+    char usermode = 0;
+    char gutasm = 0;
+
+    memset(tape, 0, 256);
 
     if(argc < 2){
         fprintf(stderr, "%s", help);
@@ -41,8 +53,16 @@ int main(int argc, char **argv)
 					fname = argv[++a];
 					break;
 
-				case 's':
+				case 'd':
 					stepmode = 1;
+					break;
+
+                case 'u':
+					usermode = 1;
+					break;
+
+                 case 'S':
+					gutasm = 1;
 					break;
 			}
 		}
@@ -93,8 +113,10 @@ int main(int argc, char **argv)
     }
 
     fclose(fp);
+    memcpy(tape_orig, tape, 256);
 
-    printf("--==[gut]==-- -[gmb]- -[2014]- -[v1.1]-\n\n");
+
+    printf("--==[gut]==-- -[gmb]- -[2014-2015]- -[v1.2]-\n\n");
 
     printf("t: %s\n\n", tape);
 
@@ -121,6 +143,7 @@ int main(int argc, char **argv)
 
         if(p > 0){
             fprintf(stderr, "%3d: %s <-- error(%d)\n", step, tape, p);
+            ret = 3;
             break;
         }
 
@@ -133,7 +156,25 @@ int main(int argc, char **argv)
             getch();
     }
 
-    return 0;
+    /* switch is on AND "halt" rule found "*/
+    if(gutasm && p == -1){
+        char asmname[256];
+        sprintf(asmname, "%s.S", fname);
+
+        if((err = create_asm(asmname, tape_orig, rules, rule_ctr)) < 0){
+            fprintf(stderr, "\ncreate_asm() failed. (%d)\n", err);
+            ret = 4;
+        }
+        else
+            printf("\nAssembly file created: %s\n", asmname);
+    }
+
+    if(usermode){
+        printf("\n\nPress anything to exit.");
+        getch();
+    }
+
+    return ret;
 }
 
 int handle_line(char *line){
