@@ -25,7 +25,7 @@ The system has to be initialized at startup (q = 0, head_pos = 0 [first square o
 
 syntax: 
 ```
-symbol(1) old_state(<= 16) new_state(<= 16) write(1) move(1) halt(1)
+symbol old_state new_state write move halt
 ```
 
 * symbol: a character that is on the tape, any character except '#' and ' '(space)
