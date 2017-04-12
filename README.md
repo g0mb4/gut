@@ -11,25 +11,26 @@ Very simple Turing-like programming language written in C.
 	      |  |                ~~~~~ 
        l <-   |__|   -> r         | 0 |
 	      head                ~~~~~
-		/\                 state(q)
-		|
-		+------------------> rules  
+	       /\                 state(q)
+	       |
+	       +------------------> rules  
 ```
-	There is an infinite long tape(we use a finite log tape) with squares on it, each square contains a symbol. A head moves along the tape and it can read and/or write exactly one square on each step. It can move left or right, but only one square per step.
-	This system has a state, which can be changed. There is a set of rules, that describes the behaviour of the system, based on the current symbol and the state.
-	Every program (ruleset) MUST contain a rule for halt.
-	The system has to be initialized at startup (q = 0, head_pos = 0 [first square of the tape]).
+There is an infinite long tape(we use a finite log tape) with squares on it, each square contains a symbol. A head moves along the tape and it can read and/or write exactly one square on each step. It can move left or right, but only one square per step.
+This system has a state, which can be changed. There is a set of rules, that describes the behaviour of the system, based on the current symbol and the state.
+Every program (ruleset) MUST contain a rule for halt.
+The system has to be initialized at startup (q = 0, head_pos = 0 [first square of the tape]).
 
 
 ## rules (program):
 
 syntax: symbol(1) old_state(<= 16) new_state(<= 16) write(1) move(1) halt(1)
 
-- symbol: a character that is on the tape, any character except '#' and ' '(space)
-- old state: the state of the system : __ - whatever
-				       qx - equals x ?
-				       nx - NOT equals x ?
-- new state: state after step : __ - no changes
+* symbol: a character that is on the tape, any character except '#' and ' '(space)
+* old state: the state of the system : 
+	* __ - whatever
+	* qx - equals x ?
+	* nx - NOT equals x ?
+* new state: state after step : __ - no changes
 				ex : state = x
 				pp : plus 1 (++)
 				mm : minus 1 (--)
