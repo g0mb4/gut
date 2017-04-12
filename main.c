@@ -1,24 +1,21 @@
+/* main.c - main file for GUT
+ * 2014, gmb */
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-typedef struct{
-    char sym;
-    char oldstat[2];
-    char newstat[2];
-    char write_val;
-    char move;
-    char halt;
-}rule;
+#include "gut.h"
 
 char tape[256];
 int head_pos = 0, status = 0;
+int head_pos_tmp, status_tmp;
 rule rules[128];
 int rule_ctr = 0;
 
-int handel_line(char *line);
-int process(char c, char *t, int *s, int *h);
+int handle_line(char *line);
 
-char *help = "usage: gut -f <file> [-s]\n\n -f <file> - loads <file> and executes it\n -s - stepping mode\n2014, gmb\n";
+char *help = "usage: gut -f <file> [-s]\n\n -f <file> - loads <file> and executes it\n -s - stepping mode(user interaction required)\n2014, gmb\n";
 
 int main(int argc, char **argv)
 {
@@ -34,6 +31,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    /* check switch options */
     int a;
     for(a = 0; a < argc; a++){
         if(argv[a][0] == '-'){
@@ -56,7 +54,7 @@ int main(int argc, char **argv)
         return 2;
     }
 
-
+    /* read file line by line */
     while(fgets(line, sizeof(line), fp) != NULL){
             linenum++;
 
@@ -87,7 +85,7 @@ int main(int argc, char **argv)
                     if(line[0] == 'r' && line[1] == '>')
                         break;
 
-                    if((err = handel_line(line)) < 0){
+                    if((err = handle_line(line)) < 0){
                         fprintf(stderr, "%d: %s <- error\n", linenum, line);
                     }
                 }
@@ -96,21 +94,23 @@ int main(int argc, char **argv)
 
     fclose(fp);
 
-    printf("--==[gut]==-- -[gmb]- -[2014]- -[v1.0]-\n\n");
+    printf("--==[gut]==-- -[gmb]- -[2014]- -[v1.1]-\n\n");
 
     printf("t: %s\n\n", tape);
 
     /* init */
     head_pos = 0;
     status = 0;
+    head_pos_tmp = 0;
+    status_tmp = 0;
     int step = 0;
     int p = 0;
 
     /* execute the program */
     while(1){
-        p = process(tape[head_pos], tape, &status, &head_pos);
+        p = process(rules, rule_ctr, tape[head_pos], tape, &status, &head_pos);
 
-        printf("%3d: %s | s: %d | h: %d", step, tape, status, head_pos);
+        printf("%3d: %s | q: %d -> %d | h: %d -> %d", step, tape, status_tmp, status, head_pos_tmp, head_pos);
 
         if(p == -1){
             printf(" halt\n");
@@ -125,6 +125,10 @@ int main(int argc, char **argv)
         }
 
         step++;
+
+        head_pos_tmp = head_pos;
+        status_tmp = status;
+
         if(stepmode)
             getch();
     }
@@ -132,76 +136,21 @@ int main(int argc, char **argv)
     return 0;
 }
 
-int handel_line(char *line){
+int handle_line(char *line){
+    /* TODO: error checking */
     int ret = 0;
 
     rule r;
 
+    /* init the strings */
+    memset(r.oldstat, '\0', STAT_SIZE);
+    memset(r.newstat, '\0', STAT_SIZE);
+
+    /* read formatted rule */
     sscanf(line, "%c %s %s %c %c %c", &r.sym, r.oldstat, r.newstat, &r.write_val, &r.move, &r.halt);
+
+    /* add rule to the ruleset */
     rules[rule_ctr++] = r;
 
     return ret;
-}
-
-int process(char c, char *t, int *s, int *h){
-    int i;
-    char good = 1, good1, good2, good3;
-    char found = 0;
-
-    for(i = 0; i < rule_ctr; i++){
-        /* symbol found */
-        if(rules[i].sym == c){
-            good1 = (rules[i].oldstat[0] == '_');
-            good2 = (rules[i].oldstat[0] == 'e' && *s == (int)(rules[i].oldstat[1] - '0'));
-            good3 = (rules[i].oldstat[0] == 'n' && *s != (int)(rules[i].oldstat[1] - '0'));
-
-            good = good1 || good2 || good3;
-
-            if(good){
-                found = 1;
-
-                if(rules[i].newstat[0] == 'p')
-                    if(rules[i].newstat[1] == 'p')
-                        *s = *s + 1;
-                    else
-                        *s = *s + (int)(rules[i].newstat[1] - '0');
-
-                else if(rules[i].newstat[0] == 'm')
-                    if(rules[i].newstat[1] == 'm')
-                        *s = *s - 1;
-                    else
-                        *s = *s - (int)(rules[i].newstat[1] - '0');
-                else if(rules[i].newstat[0] == '_'){}
-                else
-                    return 1;
-
-
-                if(rules[i].write_val != '_')
-                    t[*h] = rules[i].write_val;
-
-                if(rules[i].move == 'r')
-                    *h = *h + 1;
-                else if(rules[i].move == 'l')
-                    *h = *h - 1;
-                else if(rules[i].move == '_'){}
-                else
-                    return 2;
-
-                if(rules[i].halt == '1')
-                    return -1;
-            } else {
-                continue;
-            }
-        }
-
-        if(found)
-            break;
-    }
-
-    if(found != 1){
-        return 3;
-    }else{
-        return 0;
-    }
-
 }
