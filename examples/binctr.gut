@@ -1,0 +1,19 @@
+# binctr.gut - the program reads the current binary number printed on the tape and increments it by 1 before stopping.
+# source: http://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/turing-machine/four.html
+# 2014, gmb
+
+<t
+0011b
+t>
+
+<r
+b q0 e1 _ l 0
+0 q0 __ _ r 0
+1 q0 __ _ r 0
+b q1 e2 1 r 0
+0 q1 e2 1 l 0
+1 q1 __ 0 l 0
+b q2 __ _ _ 1
+0 q2 __ _ r 0
+1 q2 __ _ r 0
+r>
